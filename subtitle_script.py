@@ -1,3 +1,13 @@
+## Script to take an existing video file and .vtt subtitle file and create a new video file with the subtitles hardcoded into the video itself. 
+# The script uses FFmpeg to combine the video and subtitle files, and the WebVTT library to convert the subtitles
+# Runs with the following command: python subtitle_script.py video.mp4 subtitles.vtt output.mp4
+# Or with a batch command: python subtitle_script.py video_folder/ subtitles_folder/ output_folder/
+# Use the --debug flag to process only the first minute of each video for testing purposes.
+# Use the --offset flag to adjust the timing of the subtitles if they are out of sync with the video.
+# The script will automatically match video and subtitle files based on episode number in the filename when running a batch.
+
+
+
 import webvtt
 import subprocess
 import os
@@ -187,7 +197,7 @@ def process_files(video_path, sub_path, output_path, debug=False, time_offset=0)
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description='Add English subtitles to video(s)')
+    parser = argparse.ArgumentParser(description='Add additional subtitles to video(s)')
     parser.add_argument('video_path', help='Video file or directory')
     parser.add_argument('sub_path', help='Subtitle file or directory')
     parser.add_argument('output_path', help='Output file or directory')
