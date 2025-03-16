@@ -73,9 +73,13 @@ Use `--offset` to fine-tune synchronization.
    - Upload videos and subtitles
    - Adjust timings with visual previews
    - Translate and generate subtitles with AI
+
 🚀 **AI-Enhanced Translations**: Instead of simple translations, implement context-aware subtitle adaptation.
+
 🚀 **Real-Time Sync Adjustments**: A UI with a timeline editor for fine-tuning subtitle positions.  
+
 🚀 **Subtitle Styling**: Add dynamic font styling and positioning based on speaker identification.  
+
 🚀 **Automatic Speaker Detection**: Identify speakers and color-code their subtitles.  
 
 ---
