@@ -1,5 +1,5 @@
 ## This script is designed to adjust the timing of subtitles in VTT files, either by shifting all timestamps by a specified number of seconds or by combining two VTT files while preserving the original timing precision.
-# 
+
 
 import webvtt
 from datetime import timedelta
