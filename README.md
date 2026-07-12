@@ -1,92 +1,112 @@
-# Subtitle Processing Toolkit
+# Subtitle Toolkit
 
-## Overview
+Tools for **dual subtitles**: overlay a second language on videos that already have one. Shift and combine `.vtt` files, then embed subtitles into videos — either burned in (top- or bottom-positioned) or as a fast soft track.
 
-This project provides a set of tools for working with subtitles, including:
-- Adjusting subtitle timings in `.vtt` files.
-- Combining multiple subtitle files while preserving timing accuracy.
-- Embedding subtitles directly into videos using `FFmpeg`.
+## Project layout
 
-## Features
-
-- **Adjust VTT Timings**: Shift subtitles forward or backward in time.
-- **Merge Subtitles**: Combine subtitles from multiple episodes while maintaining synchronization.
-- **Hardcode Subtitles**: Embed subtitles into a video file using `FFmpeg`, supporting batch processing.
-- **Time Offset Handling**: Adjust subtitle delays for better synchronization.
+```
+subtitle_toolkit/     # core library
+  vtt.py              #   shift / combine VTT files
+  ass.py              #   VTT -> styled ASS conversion (top/bottom positioning)
+  burn.py             #   FFmpeg burn-in (re-encode) and soft-sub mux (no re-encode)
+  matching.py         #   episode-number matching for batch mode
+  ffmpeg.py           #   FFmpeg discovery
+  cli.py              #   unified command-line interface
+  gui.py              #   Tkinter desktop GUI
+tests/                # pytest suite (no FFmpeg required)
+```
 
 ## Installation
 
-### Prerequisites
+Requires Python 3.9+ and, for video operations, [FFmpeg](https://ffmpeg.org/download.html) (on `PATH`, or set `SUBTITLE_TOOLKIT_FFMPEG` to the executable's full path).
 
-- Python 3.8+
-- `ffmpeg` (Ensure it's installed and accessible in your system path)
-- Required Python libraries:
-  ```sh
-  pip install webvtt-py
-  ```
+```sh
+pip install -e .          # installs the `subtitle-toolkit` command
+# or just install the one dependency and run from the repo:
+pip install webvtt-py
+```
 
 ## Usage
 
-### Adjust Subtitle Timings
-Shift all subtitle timings in a `.vtt` file:
+All commands work as `subtitle-toolkit <cmd>` (if installed) or `python -m subtitle_toolkit <cmd>` (from the repo).
+
+### Desktop GUI
 
 ```sh
-python vtt_adjuster.py shift input.vtt output.vtt 2.5
+python -m subtitle_toolkit.gui
 ```
 
-(Shifts the subtitles forward by 2.5 seconds.)
+### Shift subtitle timings
 
-### Combine Two Subtitle Files
 ```sh
-python vtt_adjuster.py combine episode1.vtt episode2.vtt output.vtt 1800
+python -m subtitle_toolkit shift input.vtt output.vtt 2.5
 ```
-(Combines `episode2.vtt` after `episode1.vtt`, assuming `episode1` is 1800 seconds long.)
 
-### Embed Subtitles into a Video
-For a single video:
+### Combine two subtitle files
+
 ```sh
-python subtitle_script.py video.mp4 subtitles.vtt output.mp4
+python -m subtitle_toolkit combine episode1.vtt episode2.vtt output.vtt 1800
 ```
 
-For batch processing (matching videos and subtitles by episode number):
+(Appends `episode2.vtt` after `episode1.vtt`, where episode 1 is 1800 seconds long.)
+
+### Burn subtitles into a video (re-encodes)
+
 ```sh
-python subtitle_script.py video_folder/ subtitles_folder/ output_folder/
+python -m subtitle_toolkit burn video.mp4 subtitles.vtt output.mp4 --offset 1.5 --position top
 ```
 
-Use `--offset` to fine-tune synchronization.
+`--position top` (default) places subtitles at the top of the frame so they coexist with subs already burned into the bottom.
+
+### Mux subtitles as a soft track (fast, no re-encode)
+
+```sh
+python -m subtitle_toolkit mux video.mp4 subtitles.vtt output.mp4 --language jpn
+```
+
+### Batch mode
+
+Pass directories instead of files; videos and subtitles are matched by episode number (`S01E05`, `ep5`, trailing numbers — resolution tokens like `1080p` are ignored):
+
+```sh
+python -m subtitle_toolkit burn videos/ subs/ output/ --debug
+```
+
+`--debug` processes only the first minute of each video.
+
+The legacy entry points (`subtitle_script.py`, `vtt_adjuster.py`, `subtitle_gui.py`) still work and forward to the new CLI.
+
+## Development
+
+```sh
+pip install -e .[dev]
+python -m pytest
+```
 
 ---
 
 ## Roadmap
 
-### Short-Term Goals
-✅ Improve subtitle parsing efficiency  
-✅ Add subtitle time offsets for better sync control  
+### Done
+✅ Core library refactor (`subtitle_toolkit` package) with tests
+✅ Soft-subtitle muxing (no re-encode)
+✅ Desktop GUI (threaded, direct library calls)
 
-### Mid-Term Goals
-🔲 **AI-powered Translations**: Integrate OpenAI’s API or Google Translate to automatically translate existing `.vtt` files.  
-🔲 **Auto VTT Generation**: Convert AI-generated translations into `.vtt` format with precise timestamps.  
-🔲 **Multi-Language Support**: Provide language selection in the command-line tool.  
+### Next: Web studio
+🔲 Browser-based dual-subtitle editor: open a local video (no upload), preview two subtitle tracks live, adjust offsets with instant feedback, export VTT/SRT/ASS
+🔲 Subtitle search: OpenSubtitles API (hash-based matching), Jimaku for anime
+🔲 yt-dlp integration for platforms that expose subtitle tracks
 
-### Long-Term Goals
-🚀 **Web UI for Subtitle Processing**: A user-friendly interface to:
-   - Upload videos and subtitles
-   - Adjust timings with visual previews
-   - Translate and generate subtitles with AI
-
-🚀 **AI-Enhanced Translations**: Instead of simple translations, implement context-aware subtitle adaptation.
-
-🚀 **Real-Time Sync Adjustments**: A UI with a timeline editor for fine-tuning subtitle positions.  
-
-🚀 **Subtitle Styling**: Add dynamic font styling and positioning based on speaker identification.  
-
-🚀 **Automatic Speaker Detection**: Identify speakers and color-code their subtitles.  
-
----
+### Later
+🚀 Tauri desktop app wrapping the web studio, bundling FFmpeg for local burn-in
+🚀 Whisper transcription for content with no existing subtitles
+🚀 AI translation of subtitle tracks
+🚀 Timeline editor with waveform-based sync alignment
 
 ## Contributing
-Contributions are welcome! Please open issues or pull requests for bug fixes or new features.
+
+Contributions are welcome! Please open issues or pull requests.
 
 ## License
-MIT License
 
+MIT License
