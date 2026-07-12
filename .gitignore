@@ -1,1 +1,28 @@
-*/
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+
+# Media and subtitle working files (keep repo code-only)
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.webm
+*.vtt
+*.srt
+*.ass
+videos/
+subs/
+output/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

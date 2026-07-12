@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "subtitle-toolkit"
+version = "0.2.0"
+description = "Dual-subtitle toolkit: shift, combine, convert, and embed subtitles into videos"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = ["webvtt-py>=0.4"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+subtitle-toolkit = "subtitle_toolkit.cli:main"
+
+[project.gui-scripts]
+subtitle-toolkit-gui = "subtitle_toolkit.gui:main"
+
+[tool.setuptools.packages.find]
+include = ["subtitle_toolkit*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
