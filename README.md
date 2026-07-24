@@ -2,6 +2,9 @@
 
 ## Overview
 
+See /refactor/core-package branch for in progress updates, this branch has lagged but is left for posterity until refactor is complete. 
+
+
 This project provides a set of tools for working with subtitles, including:
 - Adjusting subtitle timings in `.vtt` files.
 - Combining multiple subtitle files while preserving timing accuracy.
